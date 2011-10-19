@@ -1,3 +1,6 @@
-Aqui se iran poniendo los archivos de Git
+Here will be the specifications of the project.
 
-pronto habra un make con el cual se compilaran cada una de las partes.
+At this time, all is in one file, bt we are going to make it more modular
+so we can make changes.
+
+make file in progress.
