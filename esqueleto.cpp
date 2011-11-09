@@ -20,7 +20,7 @@
 //Headers Propios
 #include "reader.h"
 #include "lights.h"
-
+#include "solido.h"
 
 // Angulo de rotacion de la camara
 float angle = 0.0f;
@@ -357,12 +357,22 @@ void renderScene(void) {
 	light0Pos[2]=z-12;
 
 	dibuja(raiz);
+
+	//Dibuja un solido de Revolucion
 	glPushMatrix();
-	glTranslatef(x,y-2,z-13);
-	glColor3f(1.0,1.0,1.0);
-	gluSphere(spotQ,.2,10,10);
+		glTranslatef(0.0,5.0,0.0);
+		drawRev();
 	glPopMatrix();
-	glLightfv(GL_LIGHT0,GL_POSITION,light0Pos); //Con estas dos opciones se oscurecen más los objetos
+
+	//Dibuja una Esfera, donde se encuentra la Luz
+	glPushMatrix();
+		glTranslatef(x,y-2,z-13);
+		glColor3f(1.0,1.0,1.0);
+		gluSphere(spotQ,.2,10,10);
+	glPopMatrix();
+	glLightfv(GL_LIGHT0,GL_POSITION,light0Pos);
+
+
         glutSwapBuffers();
 } 
 
@@ -909,6 +919,8 @@ int main(int argc,char **argv){
 	//Open GL init
 	glEnable(GL_DEPTH_TEST);
 
+	//Grueso de las lineas a dibujar
+	glLineWidth(3.0); 
 	//Se carga la estructura de datos
 	raiz = cargaArbol("sk.txt");
 	
