@@ -3,6 +3,7 @@
 #include <math.h>
 #include <string.h>
 
+
 #define MAX_CHILD 5
 #define MAX_ELEMENTCOUNT 20
 
@@ -16,6 +17,9 @@
 #include <GL/glu.h>
 #endif
 
+//Headers Propios
+#include "reader.h"
+#include "lights.h"
 
 
 // Angulo de rotacion de la camara
@@ -41,6 +45,12 @@ int modo = 1;
 
 // Grados de libertad de los elementos
 float minAng, maxAng;
+
+//Matriz de Movimiento
+Matriz *m;
+
+//Quadric de luz
+GLUquadricObj *spotQ;
 
 typedef struct _Elemento
 {
@@ -131,16 +141,6 @@ Elemento *agregaElemento(Elemento **root,Elemento **temp,char *hijo, char *name,
 	for(i=0; i < MAX_CHILD;i++){
 		(*temp)->child[i]= NULL;
 	}
-	printf("Nombre: %s\n",(*temp)->name);
-	/*
-	printf("Hijo: %s\n",hijo);
-	printf("Nombre: %s\n",name);
-	printf("thetas x:%d y:%d z:%d\n",theta[0],theta[1],theta[2]);
-	printf("Limits x: %d %d y: %d %d z: %d %d\n",limitsx[0],limitsx[1],limitsy[0],limitsy[1],limitsz[0],limitsz[1]);
-	printf("Dimensions: %f %f\n",dimension[0],dimension[1]);
-	printf("Trans x:%f y:%f  z:%f\n\n\n",trans_x,trans_y,trans_z);
-	*/
-	
 	return *temp;
 
 }
@@ -292,7 +292,7 @@ int liberaNodos(Elemento *root){
 	for(i =0; i < root->childCount;i++){
 		liberaNodos(root->child[i]);
 	}
-	printf("Se libero: %s \n",root->name);
+//	printf("Se libero: %s \n",root->name);
 	gluDeleteQuadric(root->q);
 	free(root);
 	return 0;
@@ -338,9 +338,6 @@ void computeY(float deltaMove){
  * Se encarga de dibujar la escena
  * */
 void renderScene(void) {
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	glEnable(GL_COLOR_MATERIAL);
 	if (deltaMovez)
 		computePos(deltaMovez);
 	if (deltaMovey)
@@ -355,7 +352,17 @@ void renderScene(void) {
 			x+lx, y+ly,  z+lz,
 			0.0f, 1.0f,  0.0f);
 	//Seccion de Dibujo
+	light0Pos[0]=x;
+	light0Pos[1]=y-2;
+	light0Pos[2]=z-12;
+
 	dibuja(raiz);
+	glPushMatrix();
+	glTranslatef(x,y-2,z-13);
+	glColor3f(1.0,1.0,1.0);
+	gluSphere(spotQ,.2,10,10);
+	glPopMatrix();
+	glLightfv(GL_LIGHT0,GL_POSITION,light0Pos); //Con estas dos opciones se oscurecen más los objetos
         glutSwapBuffers();
 } 
 
@@ -368,7 +375,6 @@ int dibuja(Elemento *nodo){
 	if(nodo == NULL)
 		return 1;
 	int i;
-
 	glPushMatrix();
 	glTranslatef(nodo->trans_x,nodo->trans_y,nodo->trans_z);
 	glRotatef(nodo->theta[0],1.0,0.0,0.0);
@@ -590,7 +596,7 @@ void processNormalKeys(unsigned char key, int xx, int yy) {
 				 case 3:
 					 p = seleccionaElemento(raiz, "T->BI1");
 						if(p){
-							minAng = -30.0;
+							minAng = -90.0;
 							p->theta[0] -= (p->theta[0] > minAng) ? 5 : 0;
 						} 
 				 break;
@@ -859,7 +865,7 @@ void liberaAux(){
 	liberaNodos(raiz);
 }
 
-int main(int argc, char **argv){
+int main(int argc,char **argv){
 	//Inicializar arreglo de nombres
 	char names[MAX_ELEMENTCOUNT][20];
 	names [0][0] = '\0';
@@ -877,9 +883,12 @@ int main(int argc, char **argv){
 	glutInit(&argc,argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 
+	//Inicializa spot
+	spotQ=gluNewQuadric();
 	//GLUT Window	
 	glutInitWindowSize(500,500);
 	glutCreateWindow("Personaje");
+	init();
 	//Funciones de Dibujo
 	computePos(-100);
 	computeY(-100);
@@ -902,8 +911,7 @@ int main(int argc, char **argv){
 
 	//Se carga la estructura de datos
 	raiz = cargaArbol("sk.txt");
-	imprimeArbol(raiz,0);
-
+	
 	//Funcion que libera los nodos
 	atexit(liberaAux);
 	//Inicia el Loop de GLUT
