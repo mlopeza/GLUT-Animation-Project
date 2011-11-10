@@ -1,4 +1,4 @@
-#define LINES 300.0 /* MAX lines to draw*/
+#define LINES 3000.0 /* MAX lines to draw*/
 #define SIZE 2 
 /* Estructura de Punto*/ 
 struct point3D{ 
@@ -29,8 +29,8 @@ void drawRev(){
 	int i; 
 	for( i=0;i<LINES;++i) { 
 		float frac = (float)i / LINES; /* Recorrera los 360 Grados Divididos en el numero de Lineas que se desea dibujar.*/ 
-		glRotatef(frac*360,0.0,1.0,0.0); 
-		glColor3f(1.0-frac,0.0,frac); /*Cambia el color segun lalinea que se desea dibujar*/
+		glRotatef(frac*360,0.0,1.0,0.0);
+		glColor3f(1.0,0.0,0.0); /*Cambia el color segun lalinea que se desea dibujar*/
 		drawOutline(); 
 	} 
 } 
