@@ -359,8 +359,19 @@ void renderScene(void) {
 	dibuja(raiz);
 
 	//Dibuja un solido de Revolucion
+	glShadeModel(GL_SMOOTH);
 	glPushMatrix();
-		glTranslatef(0.0,5.0,0.0);
+		glTranslatef(0.0,4.0,0.0);
+		glColor3f(0.0,1.0,1.0);
+		glScalef(5.0,2.0,5.0);
+		drawRev();
+	glPopMatrix();
+
+	glShadeModel(GL_SMOOTH);
+	glPushMatrix();
+		glTranslatef(0.0,4.8,0.0);
+		glColor3f(1.0,1.0,0.0);
+		glScalef(1.0,0.5,1.0);
 		drawRev();
 	glPopMatrix();
 
@@ -918,7 +929,7 @@ int main(int argc,char **argv){
 	agregaMenu();
 	//Open GL init
 	glEnable(GL_DEPTH_TEST);
-
+	glEnable(GL_NORMALIZE);
 	//Grueso de las lineas a dibujar
 	glLineWidth(3.0); 
 	//Se carga la estructura de datos
