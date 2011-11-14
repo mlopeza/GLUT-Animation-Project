@@ -2,31 +2,31 @@ r Torso cylinder 0 0 0 1 1 2 2 3 3 4 .5 0 0 0
 h Cuello cylinder 0 0 0 -30 45 -90 90 3 3 1 .3 0 2.5 0
 h Cabeza sphere 0 0 0 1 1 2 2 3 3 1 1 0 1 0
 
-x T->BI1 sphere -35 0 80 1 1 2 2 3 3 .5 .5 -.5 1.5 0
+x T->BI1 sphere 0 0 0 1 1 2 2 3 3 .4 .4 -.5 1.5 0
 h BI1 cylinder 0 0 0 1 1 2 2 3 3 2 .3 -1.3 0 0
-h BI1->BI2 sphere 0 0 0 1 1 2 2 3 3 .4 .4 -1 0 0
+h BI1->BI2 sphere 0 0 0 1 1 2 2 3 3 .3 .3 -1 0 0
 h BI2 cylinder 0 0 0 1 1 2 2 3 3 2.3 .2 -1.4 0 0
 h BI2->BI3 sphere 0 0 0 1 1 2 2 3 3 .3 .3 -1 0 0
 h BI3 cube 0 0 0 1 1 2 2 3 3 1 .1 -.6 0 0
 
 
-x T->BD1 sphere 0 0 0 1 1 2 2 3 3 .5 .5 .5 1.5 0
+x T->BD1 sphere 0 0 0 1 1 2 2 3 3 .4 .4 .5 1.5 0
 h BD1 cylinder 0 0 0 1 1 2 2 3 3 2 .3 1.3 0 0
-h BD1->BD2 sphere 0 0 0 1 1 2 2 3 3 .4 .4 1 0 0
+h BD1->BD2 sphere 0 0 0 1 1 2 2 3 3 .3 .3 1 0 0
 h BD2 cylinder 0 0 0 1 1 2 2 3 3 2.3 .2 1.4 0 0
 h BD2->BD3 sphere 0 0 0 1 1 2 2 3 3 .3 .3 1 0 0
 h BD3 cube 0 0 0 1 1 2 2 3 3 1 .1 .6 0 0
 
-x T->PI1 sphere 0 0 0 1 1 2 2 3 3 .5 .5 -.5 -2 0
+x T->PI1 sphere 0 0 0 1 1 2 2 3 3 .4 .4 -.5 -2 0
 h PI1 cylinder 0 0 0 1 1 2 2 3 3 3 .4 0 -1.8 0
-h PI1->PI2 sphere 0 0 0 1 1 2 2 3 3 .4 .4 0 -1.6 0
+h PI1->PI2 sphere 0 0 0 1 1 2 2 3 3 .3 .3 0 -1.6 0
 h PI2 cylinder 0 0 0 1 1 2 2 3 3 2 .3 0 -1.2 0
 h PI2->PI3 sphere 0 0 0 1 1 2 2 3 3 .3 .3 0 -1 0
 h PI3 cube 0 0 0 1 1 2 2 3 3 1 .1 0 -.2 .6
 
-x T->PD1 sphere 0 0 0 1 1 2 2 3 3 .5 .5 .5 -2 0
+x T->PD1 sphere 0 0 0 1 1 2 2 3 3 .4 .4 .5 -2 0
 h PD1 cylinder 0 0 0 1 1 2 2 3 3 3 .4 0 -1.8 0
-h PD1->PD2 sphere 0 0 0 1 1 2 2 3 3 .4 .4 0 -1.6 0
+h PD1->PD2 sphere 0 0 0 1 1 2 2 3 3 .3 .3 0 -1.6 0
 h PD2 cylinder 0 0 0 1 1 2 2 3 3 2 .3 0 -1.2 0
 h PD2->PD3 sphere 0 0 0 1 1 2 2 3 3 .3 .3 0 -1 0
 h PD3 cube 0 0 0 1 1 2 2 3 3 1 .1 0 -.2 .6

@@ -52,6 +52,38 @@ Matriz *m;
 //Quadric de luz
 GLUquadricObj *spotQ;
 
+//Manejo de materiales
+GLfloat matAmbient [] =  {0.329412,0.223529,0.027451,
+						  0.0215, 0.1745, 0.0215, 
+						  0.135, 0.2225, 0.1575,
+						  0.25,0.20725,0.20725,
+						  0.2125,0.1275,0.054,
+						  0.24725,0.1995,0.0745,
+						  0.19225,0.19225,0.19225,
+						  0.1,0.18725,0.1745};
+GLfloat matDiffuse [] =  {0.780392,0.568627,0.113725,
+						  0.07568, 0.61424, 0.07568, 
+						  0.54, 0.89, 0.63,
+						  1,0.829,0.829,
+						  0.714,0.4284,0.18144,
+						  0.75164,0.60648,0.22648,
+						  0.50754,0.50754,0.50754,
+						  0.396,0.74151,0.69102};
+GLfloat matSpecular [] =  {0.992157, 0.941176,0.807843,
+							.633, 0.727811, 0.633, 
+		    				0.316228, 0.316228, 0.316228,
+							.296648,0.296648,0.296648,
+							0.393548,0.271906,0.166721,
+							0.628281,0.555802,0.366065,
+							0.508273,0.508273,0.508273,
+							0.297254,0.30829,0.306678};
+GLfloat matShininess [] =  {27.8974, 0.6, 0.1,0.088,0.2,0.4,0.4,0.1};
+int matAsign;  //Asignación de material Actual
+
+bool cambia = true; //Variable para manejar el cambio de material de Sombrero, Torso y Zapatos
+
+GLfloat mat[4]; //Matriz auxiliar para los parametros de asignación de cada material
+
 typedef struct _Elemento
 {
 	char name[20];		/* Nombre del Nodo*/
@@ -248,6 +280,7 @@ void eleListNames(Elemento *root,char names[MAX_ELEMENTCOUNT][20])
 {
 	int i, present;
 	if(!root)
+
 		return;
 	//Checar si este nombre ya está en la lista
 	present = 0;
@@ -332,8 +365,27 @@ void computePos(float deltaMove) {
 void computeY(float deltaMove){
 	y += deltaMove *ly * 0.1f;
 }
+/* Método asignaMaterial para cambiar el material del personaje
+ *@i index del material asignado
+ */
+void asignaMaterial(int i){
 
+	mat[0] = matAmbient[i];
+    mat[1] = matAmbient[i+1];
+    mat[2] = matAmbient[i+2];
+    mat[3] = 1.0;
+    glColor4fv(mat);
+    mat[0] = matDiffuse[i];
+    mat[1] = matDiffuse[i+1];
+    mat[2] = matDiffuse[i+2];
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat);
+    mat[0] = matSpecular[i];
+    mat[1] = matSpecular[i+1];
+    mat[2] = matSpecular[i+2];
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat);
+    glMaterialf(GL_FRONT, GL_SHININESS, matShininess[i] * 128.0);
 
+}
 /*
  * Se encarga de dibujar la escena
  * */
@@ -359,20 +411,20 @@ void renderScene(void) {
 	dibuja(raiz);
 
 	//Dibuja un solido de Revolucion
-	glShadeModel(GL_SMOOTH);
 	glPushMatrix();
-		glTranslatef(0.0,4.0,0.0);
-		glColor3f(0.0,1.0,1.0);
-		glScalef(5.0,2.0,5.0);
+		glRotatef(seleccionaElemento(raiz, "Cuello")->theta[0], 1.0,0.0,0.0);
+		glRotatef(raiz->theta[1], 0.0,1.0,0.0);
+		glTranslatef(0.0,5.0,0.0);
+		asignaMaterial((matAsign+1)%8);  //Asigna un material al sombrero
 		drawRev();
 	glPopMatrix();
 
-	glShadeModel(GL_SMOOTH);
+	//Dibuja Media Esfera
 	glPushMatrix();
-		glTranslatef(0.0,4.8,0.0);
-		glColor3f(1.0,1.0,0.0);
-		glScalef(1.0,0.5,1.0);
-		drawRev();
+		glTranslatef(0.0,5.5,0.0);
+		glScalef(5.0,2.0,5.0);
+		asignaMaterial((matAsign+1)%8);
+		drawHS();
 	glPopMatrix();
 
 	//Dibuja una Esfera, donde se encuentra la Luz
@@ -387,12 +439,18 @@ void renderScene(void) {
         glutSwapBuffers();
 } 
 
-
 /*
  * Dibuja los elementos de la estructura en forma recursiva
  * a partir del nodo raiz dado.
  * */
 int dibuja(Elemento *nodo){
+	//Asigna el material independiente de Torso y Pies.
+	if((strcmp(nodo->name, "Torso") == 0) || (strcmp(nodo->name, "PI3") == 0) || (strcmp(nodo->name, "PD3") == 0)) {
+		asignaMaterial((matAsign+1)%8);
+	}
+	else
+		asignaMaterial(matAsign); //Asignacion de un material
+	
 	if(nodo == NULL)
 		return 1;
 	int i;
@@ -402,7 +460,7 @@ int dibuja(Elemento *nodo){
 	glRotatef(nodo->theta[1],0.0,1.0,0.0);
 	glRotatef(nodo->theta[2],0.0,0.0,1.0);
 	//Push
-	glColor3f(1.0,0.0,0.0);
+	//glColor3f(1.0,0.0,0.0);
 	glPushMatrix();
 	if(strcmp(nodo->type,"cube") == 0){
 		glScalef(nodo->dimension[0],nodo->dimension[1],nodo->dimension[0]);
@@ -444,7 +502,9 @@ void processNormalKeys(unsigned char key, int xx, int yy) {
 	case 'u':
 		raiz->theta[1]-=5;
 		break;
-	case 'i':
+	//Letra i para cambiar el material asignado al personaje
+	case 'i': matAsign += 1;
+			  if(matAsign > 7) matAsign = 0;
 		break;
 	case 'h':
 		break;
@@ -460,6 +520,7 @@ void processNormalKeys(unsigned char key, int xx, int yy) {
 							maxAng = 45.0;
 							p->theta[0] += (p->theta[0] < maxAng) ? 5 : 0;
 						} 
+		glutPostRedisplay();
 				 break;
 				 case 2: //Cabeza NO
 						p = seleccionaElemento(raiz, "Cuello");
@@ -891,9 +952,9 @@ int main(int argc,char **argv){
 	char names[MAX_ELEMENTCOUNT][20];
 	names [0][0] = '\0';
 	int nameIndex = 0;
-
 	eleListNames(raiz, names);
 	
+	matAsign = 0; //Asignacion de primer material
 	int i;
 	for(i = 0; (i < MAX_ELEMENTCOUNT) && (names[i][0] != '\0'); i++)
 		printf("nombre elemento: %s\n", names[i]);
@@ -929,7 +990,7 @@ int main(int argc,char **argv){
 	agregaMenu();
 	//Open GL init
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_NORMALIZE);
+	glEnable(GL_NORMALIZE); 
 	//Grueso de las lineas a dibujar
 	glLineWidth(3.0); 
 	//Se carga la estructura de datos

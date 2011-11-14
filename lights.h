@@ -5,7 +5,6 @@ GLfloat	 light0Pos[] = { 1.0, 2.0, 3.0, 1.0f }; //nuevo -1,3,-0.5,1.0f (1.0f es 
 
 void init(void){
 	
-
 	GLfloat  ambientLight[] =  { 0.1f, 0.1f, 0.1f, 1.0f };//muy oscuro
 	GLfloat  ambient0Light[] = { 0.1f, 0.1f, 0.1f, 1.0f };//oscuro = valores menores
 	GLfloat  diffuse0Light[] = { 0.5f, 0.5f, 0.5f, 1.0f };//medio
@@ -39,15 +38,18 @@ void init(void){
 
 	glLightf(GL_LIGHT0,GL_SPOT_EXPONENT,100); //Atenuación del foco, a medida que nos acercamos a él
 
-	///////////////////////////////////
 	// habilita todas las luces
 	glEnable(GL_LIGHTING);
 	// habilita la LUZ-0
 	glEnable(GL_LIGHT0);
-
+	//Manejo de color
+	 glColorMaterial(GL_FRONT, GL_DIFFUSE);
+     glEnable(GL_COLOR_MATERIAL);
+	
 	lights=1;
 
 }
+
 
 
 
