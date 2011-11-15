@@ -35,6 +35,36 @@ void drawRev(){
 	} 
 } 
 
+
+float *calculaNormal(float p1[3],float p2[3],float p3[3]){
+	float v1[3]={0};
+	float v2[3]={0};
+	float *v3=(float *)malloc(sizeof(float)*3);
+
+	//Calculo del Producto Cruz y los vectores.
+	v1[0]=p2[0]-p1[0];
+	v1[1]=p2[1]-p1[1];
+	v1[2]=p2[2]-p1[2];
+
+	v2[0]=p3[0]-p1[0];
+	v2[1]=p3[1]-p1[1];
+	v2[2]=p3[2]-p1[2];
+
+	v3[0]=v1[1]*v2[2]-v1[2]*v2[1];
+	v3[1]=v1[2]*v2[0]-v1[0]-v2[2];
+	v3[2]=v1[0]*v2[1]-v1[1]*v2[0];
+
+	//Calculo de Distancia
+	float length = sqrt((v3[0]*v3[0])+(v3[1]*v3[1])+(v3[2]*v3[2]));
+
+	//Vector Unitario
+	v3[0]=v3[0]/length;
+	v3[1]=v3[1]/length;
+	v3[2]=v3[2]/length;
+	
+	return v3;
+}
+
 /* Media Esfera*/ 
 void drawHS(){
 	float vertices[20][36][3];
@@ -54,13 +84,22 @@ void drawHS(){
 		}
 	}
 	for(int latCount=0; latCount<Latitudes-1; latCount++){
-	  	 glBegin(GL_QUAD_STRIP);
-
-	        for(int longCount=0; longCount<=Longitudes; longCount++){
-	            glVertex3f(vertices[latCount][longCount][0], vertices[latCount][longCount][1], vertices[latCount][longCount][2]);
+		glBegin(GL_QUADS);
+	        for(int longCount=0; longCount<=Longitudes-1; longCount++){
+				float *normal=calculaNormal(vertices[latCount][longCount],vertices[latCount][longCount+1],vertices[latCount+1][longCount]);
+								glNormal3f(normal[0],normal[1],normal[2]);
+				glVertex3f(vertices[latCount][longCount][0], vertices[latCount][longCount][1], vertices[latCount][longCount][2]);
+				glNormal3f(normal[0],normal[1],normal[2]);
+				glVertex3f(vertices[latCount][longCount+1][0],vertices[latCount][longCount+1][1],vertices[latCount][longCount+1][2]);
+				glNormal3f(normal[0],normal[1],normal[2]);
+				glVertex3f(vertices[latCount+1][longCount+1][0],vertices[latCount+1][longCount+1][1],vertices[latCount+1][longCount+1][2]);	
+				glNormal3f(normal[0],normal[1],normal[2]);
 	            glVertex3f(vertices[latCount+1][longCount][0], vertices[latCount+1][longCount][1], vertices[latCount+1][longCount][2]);
-		    
+				glNormal3f(normal[0],normal[1],normal[2]);
+
+				free(normal);
 	        }
 	   	 glEnd();
 	}
 } 
+
