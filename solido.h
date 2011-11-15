@@ -31,7 +31,6 @@ void drawRev(){
 	for( i=0;i<LINES;++i) { 
 		float frac = (float)i / LINES; /* Recorrera los 360 Grados Divididos en el numero de Lineas que se desea dibujar.*/ 
 		glRotatef(frac*360,0.0,1.0,0.0); 
-		//glColor3f(0.0,0.0,1.0); /*Cambia el color segun lalinea que se desea dibujar*/
 		drawOutline(); 
 	} 
 } 
@@ -55,11 +54,13 @@ void drawHS(){
 		}
 	}
 	for(int latCount=0; latCount<Latitudes-1; latCount++){
-	    glBegin(GL_QUAD_STRIP);
+	  	 glBegin(GL_QUAD_STRIP);
+
 	        for(int longCount=0; longCount<=Longitudes; longCount++){
 	            glVertex3f(vertices[latCount][longCount][0], vertices[latCount][longCount][1], vertices[latCount][longCount][2]);
 	            glVertex3f(vertices[latCount+1][longCount][0], vertices[latCount+1][longCount][1], vertices[latCount+1][longCount][2]);
+		    
 	        }
-	    glEnd();
+	   	 glEnd();
 	}
 } 
