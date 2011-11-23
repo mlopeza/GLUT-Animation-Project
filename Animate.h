@@ -85,7 +85,7 @@ void leeAnimacion(char *direccion){
 	}
 	printf("%d\n",keyFrames);
 	animateMatrix = 1;
-	//glutTimerFunc(1000,animateModel,0);
+	glutTimerFunc(1000,animateModel,0);
 
 
 }
