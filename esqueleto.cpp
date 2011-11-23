@@ -961,6 +961,10 @@ void mouseButton(int button, int state, int x, int y) {
 void funcionMenu(int valor){
 	if(valor == 200)
 		leeAnimacion("animacion1.txt");
+	if(valor == 300)
+		leeAnimacion("animacion2.txt");
+	if(valor == 400)
+		leeAnimacion("animacion3.txt");
 	if(valor == 100)  //Selecciona la opción Salir para terminar el programa
 		exit(0);
 }
@@ -1021,6 +1025,8 @@ void agregaMenu(){
 	glutSetMenu(menu);
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
 	glutAddMenuEntry("Animacion 1", 200);
+	glutAddMenuEntry("Animacion 2", 300);
+	glutAddMenuEntry("Animacion 3", 400);
 	glutAddMenuEntry("Salir", 100);
 	glutAddSubMenu("Rotaciones",submenu);
 	glutSetMenu(submenu);
