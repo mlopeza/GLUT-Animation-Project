@@ -42,7 +42,6 @@ char *currentName = NULL;
 
 //Modo inicial = cabeza dice que SI
 int modo = 1;
-
 // Grados de libertad de los elementos
 float minAng, maxAng;
 
@@ -116,6 +115,7 @@ typedef struct _Elemento
 
 } Elemento;
 int dibuja(Elemento *nodo);
+Elemento *seleccionaElemento(Elemento *root, const char *name);
 
 /* Nodo Raiz
 * Se agrego aqui debido a que se necesitan liberar
@@ -124,6 +124,7 @@ int dibuja(Elemento *nodo);
 * */
 Elemento *raiz;
 
+#include "Animate.h"
 /* Funcion que Agrega un apuntador a un nodo.
 * Cada nodo puede tener un numero maximo de hijos que se puede ver en MAX_CHILD
 * La funcion regresa el nodo recien creado, aunque no se utiliza
@@ -188,6 +189,9 @@ Elemento *agregaElemento(Elemento **root,Elemento **temp,char *hijo, char *name,
 		return *temp;
 
 }
+
+
+
 
 /* Funcion que crea el arbol.
 * Cada nodo del arbol es leido desde un archivo de texto que le es pasado como parametro.
@@ -256,7 +260,7 @@ Elemento *cargaArbol(char *path){
 		//Agrega los elementos al arbol	
 		agregaElemento(&root,&temp,hijo,name,type,theta,limitsx,limitsy,limitsz,dimension,trans_x,trans_y,trans_z);
 	}
-
+	fclose(file);
 	return root;
 }
 
@@ -440,7 +444,7 @@ void dibujaEscena(){
 /*
 * Se encarga de dibujar la escena
 * */
-void renderScene(void) {
+void renderScene() {
 	if (deltaMovez)
 		computePos(deltaMovez);
 	if (deltaMovey)
@@ -498,6 +502,9 @@ void renderScene(void) {
 * */
 int dibuja(Elemento *nodo){
 	//Asigna el material independiente de Torso y Pies.
+	if(strcmp(nodo->name,"PD1->PD2") == 0 ){
+		//printf("X: %d   Y: %d   Z: %d   \n",nodo->theta[0],nodo->theta[1],nodo->theta[2]);
+	}
 	if((strcmp(nodo->name, "Torso") == 0) || (strcmp(nodo->name, "PI3") == 0) || (strcmp(nodo->name, "PD3") == 0)) {
 		asignaMaterial((matAsign+1)%8);
 	}
@@ -952,6 +959,8 @@ void mouseButton(int button, int state, int x, int y) {
 }
 //Funcion funcionMenu
 void funcionMenu(int valor){
+	if(valor == 200)
+		leeAnimacion("animacion1.txt");
 	if(valor == 100)  //Selecciona la opción Salir para terminar el programa
 		exit(0);
 }
@@ -1011,6 +1020,7 @@ void agregaMenu(){
 	submenu = glutCreateMenu(funcionSubMenu);
 	glutSetMenu(menu);
 	glutAttachMenu(GLUT_RIGHT_BUTTON);
+	glutAddMenuEntry("Animacion 1", 200);
 	glutAddMenuEntry("Salir", 100);
 	glutAddSubMenu("Rotaciones",submenu);
 	glutSetMenu(submenu);
@@ -1066,7 +1076,8 @@ int main(int argc,char **argv){
 	glutSpecialUpFunc(releaseKey);
 	//Funciones del mouse
 	glutMouseFunc(mouseButton);
-
+	glutTimerFunc(3000,changeColor,0);
+	glutTimerFunc(500,animation,0);
 	glutMotionFunc(mouseMove);
 	//Agrega menu
 	agregaMenu();
@@ -1077,7 +1088,6 @@ int main(int argc,char **argv){
 	glLineWidth(3.0); 
 	//Se carga la estructura de datos
 	raiz = cargaArbol("sk.txt");
-
 	//Funcion que libera los nodos
 	atexit(liberaAux);
 	//Inicia el Loop de GLUT
